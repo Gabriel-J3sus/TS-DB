@@ -1,0 +1,35 @@
+{
+ "user": [
+  {
+   "name": "Jesus",
+   "lastName": "Pereira",
+   "age": 666,
+   "friend": [
+    "user",
+    [
+     "96d77000-a941-4acd-9269-7336d6def168"
+    ]
+   ],
+   "id": "5794d9ee-b119-4333-80ae-44e34108a6cf"
+  },
+  {
+   "name": "sssss",
+   "lastName": "Pereira",
+   "age": 666,
+   "id": "67ae944b-35cf-48a3-82cf-ac03a0990cc8"
+  },
+  {
+   "name": "Carlos",
+   "lastName": "Pereira",
+   "age": 666,
+   "products": [
+    "product",
+    [
+     "342cfdfe-036b-414b-959a-942a52278e26"
+    ]
+   ],
+   "id": "ca248365-74c1-4e87-9d96-32ad327b752b"
+  }
+ ],
+ "product": []
+}
