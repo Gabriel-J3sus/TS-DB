@@ -2,13 +2,14 @@ import fs from 'fs'
 import { ConstructorParams, EntityCollection, EntityInterface, IEntity, PopulateKey, ResolveRelation} from '../DatabaseTypes'
 import { Entity } from './Entity'
 
-class Database<P extends unknown,T extends Record<string, Entity<any>>,K = keyof T > {
+class Database<T extends Record<string, Entity<any>>,K = keyof T > {
   entities: T
   path: string
  
   constructor({ entities, path }: ConstructorParams<T>) {
     this.entities = {} as T
     this.path = path
+
     for(const entityClass in entities) {
       this.entities[entityClass] = new (entities[entityClass])()
     }
@@ -27,29 +28,35 @@ class Database<P extends unknown,T extends Record<string, Entity<any>>,K = keyof
       fs.writeFile(this.path, JSON.stringify(data, null, 1), { encoding: 'utf-8' }, () => console.log('saved data'))
     } 
   }
+
   relate<A extends T[keyof T]['records'][string]>(entity:Extract<K,string>,values:  A| A[] ){
     return this.entities[entity].relate(values,entity) as unknown as [K,ResolveRelation<A[PopulateKey<A>]>]
   }
- findPopulatable<A extends IEntity>(k:boolean|string[],entity:A){
+  
+  findPopulatable<A extends IEntity>(k:boolean|string[],entity:A){
     let populatable = []
     const entities = Object.keys(this.entities)
+    
     Object.entries(entity).forEach(([key,value]) => {
       const isPopulatable = Array.isArray(value) && entities.includes(value[0])
-        const shouldPush = typeof k === 'boolean' || k.includes(key)
+      const shouldPush = typeof k === 'boolean' || k.includes(key)
+    
       if(shouldPush && isPopulatable){
        populatable.push(key)
-      }
-      
+      }  
     })
+
     return populatable
   }
+
   populate<A extends IEntity>(entity:EntityInterface< A>,key:PopulateKey<A>| PopulateKey<A>[]|boolean){
-     let populated = {...entity}
+    let populated = {...entity}
     const keysArr = typeof key === 'string' ?  [key] : this.findPopulatable(key as string[],entity)
      
     for(const key of keysArr){
       let [table,ids] = entity[key]
       const entityName = table as Extract<K,string>
+
       if(Array.isArray(ids)){
         const data = this.entities[entityName].find(ids)
 
@@ -73,6 +80,7 @@ class Database<P extends unknown,T extends Record<string, Entity<any>>,K = keyof
     this.save()
     return populated as A
   }
+  
   load() {
     if (this.path) {
       try {

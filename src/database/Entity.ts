@@ -1,8 +1,6 @@
 import { v4 as uuid } from 'uuid'
 import { EntityInterface, IEntity } from '../DatabaseTypes';
 
-
-
 export interface IEntityModel<T extends EntityInterface<any>> {
   serialize?: (data?: T) => Partial<T> | Partial<T>[]
   create?: (data: Partial<Omit<T, "id">>) => T;
@@ -26,7 +24,7 @@ const defaultEvents: EntityEvents<any> = {
 
 // <T extends { id: string }> = T //forçando a passar sempre o id
 class Entity<T extends IEntity,EI extends EntityInterface<T> = EntityInterface<T>> implements IEntityModel<EI> { 
- records: Record<string, EI>;
+  records: Record<string, EI>;
   public events: EntityEvents<EI>
 
   constructor(events?: EntityEvents<EI>) {
